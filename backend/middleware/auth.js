@@ -3,16 +3,17 @@ require ('dotenv').config();
 
 module.exports = (req,res, next) =>{
     try {
-        console.log(req.headers)
+        console.log(req.auth);
         const token = req.headers.authorization.split(' ')[1];
         const decodedToken = jwt.verify(token, process.env.TOKEN);
         const userId = decodedToken.userId;
-        if(req.body.userId && req.body.userId!== userId) {
-            throw 'Invalid user ID';
+        const isAdmin = decodedToken.isAdmin;
+        req.auth = {
+            userId : userId,
+            isAdmin : isAdmin
         }
-        else {
             next();
-        }
+        
     }
     catch(err) {
         res.status(401).json({message: 'Requete invalide :' + err})
