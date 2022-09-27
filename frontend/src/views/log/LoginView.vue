@@ -27,7 +27,8 @@ import router from '@/router'
 
   const user = {
     email:'',
-    password: ''
+    password: '',
+    pseudo: ''
   };
 
   const login = async () =>{
@@ -40,17 +41,20 @@ import router from '@/router'
       },
       body: JSON.stringify(user)
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if(!res.ok)
+          alert('Login impossible')  
+        else{
+           return res.json()
+        }
+      })
       .catch(err => console.log({message : 'Problème réponse serveur :' + err}))
       .then (data =>{
-        const token = localStorage.setItem('token', data.token)
-        const id = localStorage.setItem('id', data.userId)
-        console.log(data);
-        if (localStorage.getItem(`token`)){
-          localStorage.setItem(`token`, data.token)
+          localStorage.setItem('token', data.token)
+          localStorage.setItem('id', data.userId)
+          localStorage.setItem('pseudo', data.pseudo)
+          console.log(data);
           router.push('/public/home');
-        }
-
       })
       .catch(err => console.log({message : 'Problème donnée de la réponse :' + err}))
   }

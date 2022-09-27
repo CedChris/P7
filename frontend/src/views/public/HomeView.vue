@@ -17,7 +17,6 @@ main{
   flex-direction: column;
   justify-content: center;
   align-items: center;
- 
 
 }
 .layout{
@@ -26,8 +25,8 @@ main{
   justify-content: center;
   align-items: center;
   width: 75%;
-  border: 1px solid salmon;
 }
+
 @media only screen and (max-width: 800px){
   .layout{
     display: flex;
