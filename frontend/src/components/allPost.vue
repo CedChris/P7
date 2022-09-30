@@ -32,39 +32,21 @@
   </div>
 </template>
 <script setup>
+
 import router from "@/router";
 import { reactive } from "vue";
+
+
+const tokenid = localStorage.getItem("token");
+const id = localStorage.getItem("id");
 
 let state = reactive({
   messages: "",
 });
-console.log(state.messages);
-const tokenid = localStorage.getItem("token");
-const id = localStorage.getItem("id");
-const iduser = {
-  userId: localStorage.getItem("id"),
-};
-const jsToken = {
-  token : tokenid
-}
-async function checkUser(user, token) {
-  await fetch(`http://localhost:5000/user/checkuser/${user}`, {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
-    },
-    body: JSON.stringify(token),
-  })
-    .then((res) => {
-      console.log(res);
-    })
-    .catch();
-}
+
+
 
 async function idpost(id) {
-  console.log(this.state.messages[id]._id);
   const idmessage = this.state.messages[id]._id;
   const iduser = localStorage.getItem("id");
   const objId = {
@@ -74,7 +56,6 @@ async function idpost(id) {
     .then((res) => res.json())
     .catch((err) => alert(err))
     .then((data) => {
-      console.log(data);
       if (!data.usersLiked.includes(iduser)) {
         fetch(`http://localhost:5000/message/add-like/${idmessage}`, {
           method: "PATCH",
@@ -89,7 +70,7 @@ async function idpost(id) {
           .then((res) => res.json)
           .catch((err) => alert("probleme serveur ajout like" + err))
           .then((data) => {
-            console.log(data);
+            alert('Like ajouté')
             router.go("/public/home");
           })
           .catch((err) => alert("problème ajout like" + err));
@@ -107,7 +88,8 @@ async function idpost(id) {
           .then((res) => res.json)
           .catch((err) => alert("problème serveur remove like" + err))
           .then((data) => {
-            console.log("Like retiré" + data);
+            alert("Like retiré");
+            router.go("/public/home");
           })
           .catch((err) => alert("problème remove like" + err));
       }
@@ -119,10 +101,12 @@ const messageApi = async () => {
     .then((data) => {
       state.messages = data;
     })
-    .catch((err) => console.log(err));
+    .catch((err) => alert(err));
 };
 messageApi();
+
 </script>
+
 <style scoped>
 .icon {
   color: v-bind(likeColor);
@@ -151,6 +135,9 @@ messageApi();
   display: flex;
   flex-direction: column;
   border-radius: 15px;
+}
+#post:hover{
+  transform: scale(1.01);
 }
 #post div {
   text-align: center;

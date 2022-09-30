@@ -1,5 +1,6 @@
 <template>
-  <div class="signup">
+  <main>
+    <div class="signup">
     <h1>Créez un compte :</h1>
     <label for="pseudo">Pseudo*:</label>
     <input type="pseudo" required="true" id="pseudo" v-model="user.pseudo" @change="pseudoValidator()" maxlength="20">
@@ -7,12 +8,15 @@
     <input type="email" required="true" id="email" v-model="user.email">
     <label for="password"> Mot de passe*: </label>
     <input type="password" required="true" id="password" v-model="user.password" minlength="8" maxlength="25">
-    <div>Tout les champs sont nécessaires</div>
+    <p>Tout les champs sont nécessaires</p>
     <input v-if="pseudoValidator() && user.email && user.password" type="button" value="S'inscrire" @click="signup">
+    <img :src="require('@/assets/icon-left-font-monochrome-black.png')" alt="logo groupomania"/>
   </div>
+  </main>
 </template>
 <script setup>
 
+import router from '@/router';
 import {reactive} from 'vue'
 
 function pseudoValidator(){
@@ -44,7 +48,8 @@ const signup = async () => {
     .then((res) => res.json())
     .catch((err) => alert({ message: 'Problème réponse serveur :' + err }))
     .then(data => {
-      console.log(data);
+      alert('Utilisateur crée!')
+      router.push('/login/')
     })
     .catch(err => alert({ message: 'Problème donnée de la réponse :' + err }))
 }else{
@@ -53,7 +58,13 @@ const signup = async () => {
 }
 </script>
 <style scoped>
-.signup{
+h1{
+  font-size: 26px;
+}
+p{
+  text-align: center;
+}
+main{
   display:flex;
   flex-direction: column;
   align-items: center;
@@ -64,5 +75,25 @@ input{
 }
 input:invalid{
   border: 2px solid red;
+}
+img{
+  width: 200px;
+}
+.signup{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 10px 0px 10px 0px ;
+  box-shadow: 0px 0px 15px #FFD7D7;
+  background-color: #FFD7D7;
+  width: 25%;
+}
+@media only screen and (max-width: 1024px) {
+  .signup{
+    width: 85%;
+  }
+  h1{
+    font-size: 26px;
+  }
 }
 </style>

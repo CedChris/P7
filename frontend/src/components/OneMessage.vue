@@ -12,7 +12,7 @@
           <div>{{ comment.text }}</div>
           <button @click="deleteComment(index)">Supprimer</button>
         </div>
-        <div id="group-btn" v-if="state.messageInfo.idPoster === userId">
+        <div id="group-btn">
           <div class="btn-update"></div>
           <label for="update">Modifier le message: </label>
           <textarea type="text" id="message" v-model="post.message" placeholder="Modifier votre message ici!"></textarea>
@@ -26,7 +26,7 @@
             placeholder="Ajouter un commentaire ici!"></textarea>
           <button @click="postComments">Envoyez</button>
         </div>
-        <button v-if="state.messageInfo.idPoster === userId" @click="deleteMessage" id="delete">Supprimer</button>
+        <button  @click="deleteMessage" id="delete">Supprimer</button>
       </div>
     </div>
   </main>
@@ -36,52 +36,47 @@
 import router from "@/router";
 import { reactive } from "vue";
 
+
+/** Recherche des paramètres dans l'URL */
+
+let params = new URL(document.location).searchParams;
+let id = params.get("id");
+
+const userId = localStorage.getItem("id");
+
+/** Variables de stockage des données "message" */
+const post = {
+  message: "",
+};
+
 const state = reactive({
   messageInfo: {},
 });
 
-async function deleteComment(idcom) {
-  const objComment = {
-    idcomment: this.state.messageInfo.comments[idcom]._id,
-  };
-  await fetch(`http://localhost:5000/message/delete-comment/${id}`, {
-    method: "PATCH",
-    headers: {
-      authorization: "Bearer " + localStorage.getItem("token"),
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
-    },
-    body: JSON.stringify(objComment),
-  })
-    .then((res) => res.json())
-    .catch((err) => {
-      console.log(err);
-    })
-    .then((data) => {
-      console.log(data);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-}
-let params = new URL(document.location).searchParams;
-let id = params.get("id");
+const messagePost = reactive({
+  comments: {
+    idPosterComment : localStorage.getItem("id"),
+    commenterPseudo: localStorage.getItem("pseudo"),
+    text: "",
+  },
+});
+
+/**Fonction d'affichage du message */
 
 const displayMessage = async () => {
   await fetch(`http://localhost:5000/message/${id}`)
     .then((res) => res.json())
     .then((data) => {
-      console.log(data);
       state.messageInfo = data;
     })
     .catch((e) => {
-      console.log(e);
+      alert(e);
     });
 };
 displayMessage();
 
-const userId = localStorage.getItem("id");
+
+/** Fonction permetant la suppression du message ciblé */
 
 const deleteMessage = async () => {
     await fetch(`http://localhost:5000/message/${id}`, {
@@ -96,20 +91,19 @@ const deleteMessage = async () => {
       .then((res) => res.json())
       .then((data) => {
         if (data)
-        if (confirm("Voulez-vous modifier votre message?")) {
+        if (confirm("Voulez-vous suprrimer ce message?")) {
         alert("Message supprimé");
         router.push("/public/home");
       }
         else {
-          alert("");
+          alert("Problème API");
         }
       })
-      .catch((e) => console.log(e));
+      .catch((e) => alert(e));
 };
 
-const post = {
-  message: "",
-};
+/** Fonction mermettant la modification du message ciblé */
+
 const updateMessage = async () => {
   await fetch(`http://localhost:5000/message/${id}`, {
     method: "PUT",
@@ -128,17 +122,10 @@ const updateMessage = async () => {
         router.push("/public/home");
       }
     })
-    .catch((e) => console.log(e));
+    .catch((e) => alert(e));
 };
 
-const messagePost = reactive({
-  comments: {
-    idPosterComment : localStorage.getItem("id"),
-    commenterPseudo: localStorage.getItem("pseudo"),
-    text: "",
-  },
-});
-console.log(messagePost.comments.text);
+
 const postComments = async () => {
   if (message) {
     await fetch(`http://localhost:5000/message/comment/${id}`, {
@@ -153,15 +140,43 @@ const postComments = async () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
+        alert('Commentaire publié')
         router.go("/public/home");
       })
 
-      .catch((e) => console.log(e));
+      .catch((e) => alert(e));
   } else {
     alert("vide");
   }
 };
+/** Fonction de suppression du commentaire */
+/** Proof of concept : Commentaire */
+
+async function deleteComment(idcom) {
+  const objComment = {
+    idcomment: this.state.messageInfo.comments[idcom]._id,
+  };
+  await fetch(`http://localhost:5000/message/delete-comment/${id}`, {
+    method: "PATCH",
+    headers: {
+      authorization: "Bearer " + localStorage.getItem("token"),
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+    },
+    body: JSON.stringify(objComment),
+  })
+    .then((res) => res.json())
+    .catch((err) => {
+      alert(err);
+    })
+    .then((data) => {
+      alert('Commmentaire supprimé')
+    })
+    .catch((err) => {
+      alert(err);
+    });
+}
 </script>
 <style scoped>
 #container-post {

@@ -1,11 +1,15 @@
 <template>
   <div id="profile">
     <h1>Pseudo: {{ state.users.pseudo }}</h1>
-    <div>User : {{ myProfile }}</div>
   </div>
 </template>
 <script setup>
 import { reactive } from "vue";
+
+/** PAGE USER */
+/** Possibilité d'ajouter d'autres fonctionnalité */
+
+
 
 const state = reactive({
   users: {},
@@ -16,12 +20,10 @@ const myProfile = localStorage.getItem("id");
 fetch(`http://localhost:5000/user/${myProfile}`)
   .then((res) => res.json())
   .then((data) => {
-    console.log(data);
     state.users = data;
-    console.log(state.users);
   })
   .catch((e) => {
-    console.log(e);
+    alert(e);
   });
 </script>
 <style>

@@ -27,8 +27,10 @@
 import router from "@/router";
 import { reactive } from "vue";
 
+/** Variable de stockage */
+
 const item = reactive({
-  image: null,
+  postWithImage: null,
   imageUrl: null,
 });
 
@@ -36,9 +38,10 @@ const messagePost = reactive({
   userId: localStorage.getItem("id"),
   pseudo: localStorage.getItem("pseudo"),
   message: "",
-  picture: "",
-  comments: [],
+  formPost: null,
 });
+
+ /** Fonction de prévisualisation et d'ajout de l'image dans le message*/
 
 const onFiles = async (e) => {
   const file = e.target.files[0];
@@ -49,13 +52,19 @@ const onFiles = async (e) => {
   imageForm.append("message", messagePost.message);
   imageForm.append("userId", localStorage.getItem("id"));
   imageForm.append("pseudo", localStorage.getItem("pseudo"));
-  item.image = imageForm;
+  item.postWithImage = imageForm;
 };
 
-console.log(messagePost);
+/** Fonction de publication de message */
 
-const post = async () => {
-  if (message) {
+const post = async (e) => {
+  let postWithoutImage = new FormData()
+    postWithoutImage.append("message", messagePost.message)
+    postWithoutImage.append("userId", localStorage.getItem("id"));
+    postWithoutImage.append("pseudo", localStorage.getItem("pseudo"));
+    messagePost.formPost = postWithoutImage;
+
+  if (item.postWithImage !== null) {
     await fetch("http://localhost:5000/message/post", {
       method: "POST",
       headers: {
@@ -63,17 +72,32 @@ const post = async () => {
         Accept: "application/json, application/xml, text/plain, text/html, *.*",
         "Access-Control-Allow-Origin": "*",
       },
-      body: item.image,
+      body: item.postWithImage,
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
+        alert('Message publié')
         router.go("/public/home");
       })
 
-      .catch((e) => console.log(e));
+      .catch((e) => alert(e));
   } else {
-    alert("vide");
+    fetch("http://localhost:5000/message/post", {
+      method: "POST",
+      headers: {
+        authorization: "Bearer " + localStorage.getItem("token"),
+        Accept: "application/json, application/xml, text/plain, text/html, *.*",
+        "Access-Control-Allow-Origin": "*",
+      },
+      body: messagePost.formPost,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        alert('Message publié')
+        router.go("/public/home");
+      })
+
+      .catch((e) => alert(e));
   }
 };
 </script>
@@ -85,8 +109,12 @@ const post = async () => {
   flex-direction: column;
   width: 81%;
   height: auto;
-  border: 1px solid #FD2D01;
   border-radius: 15px;
+  background-color: #FFD7D7;
+  box-shadow: 0 0 15px #4E5166;
+}
+h1{
+  font-size: 24px;
 }
 input {
   margin-bottom: 10px;
