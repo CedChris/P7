@@ -3,7 +3,7 @@ const ObjectId = require("mongoose").Types.ObjectId;
 const fs = require('fs')
 
 exports.createMessage = (req, res) => {
-  if(req.file){
+  if(req.file !== undefined){
   const newMessage = new messageModel({
     idPoster: req.body.userId,
     pseudo: req.body.pseudo,
@@ -18,7 +18,7 @@ exports.createMessage = (req, res) => {
     })
     .catch((err) => res.status(400).json({ message: "Erreur message" + err }))
   }
-  else{
+ else{
     const newMessage = new messageModel({
       idPoster: req.body.userId,
       pseudo: req.body.pseudo,
@@ -31,8 +31,9 @@ exports.createMessage = (req, res) => {
       res.status(201).json({ message: "Message crée" + data });
     })
     .catch((err) => res.status(400).json({ message: "Erreur message" + err }))
-  };
-}
+  }
+} 
+
 exports.readMessage = async (req, res) => {
   await messageModel
     .find()
@@ -44,11 +45,9 @@ exports.readMessage = async (req, res) => {
 };
 exports.oneMessage = (req, res) => {
   const idValid = ObjectId.isValid(req.params.id);
-  console.log(req.params.id);
   if (idValid) {
     messageModel.findById(req.params.id, (err, data) => {
       if (data) {
-        console.log(data);
         res.status(200).json(data);
       } else {
         res.status(400).json({ message: "Message introuvable :" + err });
@@ -89,7 +88,6 @@ exports.deleteMessage = async (req, res) => {
         if (!data) {
           res.status(400).json("Supression impossible" + err);
         } else {
-          console.log(data.picture.split("/image/")[1]);
           const filename = data.picture.split("/image/")[1]
           fs.unlink(`image/${filename}`,() =>{
             return res.status(200).json("Supression effectuée" + data);
@@ -103,7 +101,6 @@ exports.deleteMessage = async (req, res) => {
 // Commentaire
 exports.createComment = (req, res) => {
   const idValid = ObjectId.isValid(req.params.id);
-  console.log(req.params.id);
   if (idValid) {
     messageModel.findByIdAndUpdate(
       req.params.id,
@@ -131,7 +128,6 @@ exports.createComment = (req, res) => {
 };
 exports.deleteComment = (req, res) => {
   const idValid = ObjectId.isValid(req.params.id);
-  console.log(req.body.idcomment)
   if (idValid) {
     messageModel.findByIdAndUpdate(
       req.params.id,
