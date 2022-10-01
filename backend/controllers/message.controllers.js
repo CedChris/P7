@@ -1,24 +1,27 @@
 const messageModel = require("../models/message.model");
 const ObjectId = require("mongoose").Types.ObjectId;
-const fs = require('fs')
+const fs = require("fs");
 
 exports.createMessage = (req, res) => {
-  if(req.file !== undefined){
-  const newMessage = new messageModel({
-    idPoster: req.body.userId,
-    pseudo: req.body.pseudo,
-    message: req.body.message,
-    picture: `${req.protocol}://${req.get("host")}/image/${req.file.filename}`,
-    comments: [],
-  })
-  newMessage
-    .save()
-    .then((data) => {
-      res.status(201).json({ message: "Message crée" + data });
-    })
-    .catch((err) => res.status(400).json({ message: "Erreur message" + err }))
-  }
- else{
+  if (req.file !== undefined) {
+    const newMessage = new messageModel({
+      idPoster: req.body.userId,
+      pseudo: req.body.pseudo,
+      message: req.body.message,
+      picture: `${req.protocol}://${req.get("host")}/image/${
+        req.file.filename
+      }`,
+      comments: [],
+    });
+    newMessage
+      .save()
+      .then((data) => {
+        res.status(201).json({ message: "Message crée" + data });
+      })
+      .catch((err) =>
+        res.status(400).json({ message: "Erreur message" + err })
+      );
+  } else {
     const newMessage = new messageModel({
       idPoster: req.body.userId,
       pseudo: req.body.pseudo,
@@ -26,13 +29,15 @@ exports.createMessage = (req, res) => {
       comments: [],
     });
     newMessage
-    .save()
-    .then((data) => {
-      res.status(201).json({ message: "Message crée" + data });
-    })
-    .catch((err) => res.status(400).json({ message: "Erreur message" + err }))
+      .save()
+      .then((data) => {
+        res.status(201).json({ message: "Message crée" + data });
+      })
+      .catch((err) =>
+        res.status(400).json({ message: "Erreur message" + err })
+      );
   }
-} 
+};
 
 exports.readMessage = async (req, res) => {
   await messageModel
@@ -88,11 +93,14 @@ exports.deleteMessage = async (req, res) => {
         if (!data) {
           res.status(400).json("Supression impossible" + err);
         } else {
-          const filename = data.picture.split("/image/")[1]
-          fs.unlink(`image/${filename}`,() =>{
-            return res.status(200).json("Supression effectuée" + data);
-          })
-          
+          if (data.picture !== undefined) {
+            const filename = data.picture.split("/image/")[1];
+            fs.unlink(`image/${filename}`, () => {
+              return res.status(200).json("Supression effectuée");
+            });
+          } else {
+            return res.status(200).json("Suppression effectuée");
+          }
         }
       });
     }
@@ -107,7 +115,7 @@ exports.createComment = (req, res) => {
       {
         $push: {
           comments: {
-            idPosterComment : req.body.idPosterComment,
+            idPosterComment: req.body.idPosterComment,
             commenterPseudo: req.body.commenterPseudo,
             text: req.body.text,
           },

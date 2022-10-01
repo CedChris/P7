@@ -29,7 +29,6 @@ exports.signup = (req, res) => {
 };
 exports.login = (req, res) => {
   const { email, password, pseudo } = req.body;
-  console.log(email, password, pseudo);
   userModel
     .findOne({ email: email })
     .then((user) => {
@@ -58,7 +57,6 @@ exports.allUsers = (req, res) => {
     .select("-password")
     .then((data) => {
       res.status(200).json(data);
-      console.log(data);
     })
     .catch((err) =>
       res.status(400).json({ message: "Utilisateur inconnu" + err })
