@@ -49,6 +49,11 @@ img{
 <script setup>
 import router from "@/router";
 
+const token = localStorage.getItem('token')
+if(token){
+  router.push('/public/home')
+}
+
 const user = {
   email: "",
   password: "",

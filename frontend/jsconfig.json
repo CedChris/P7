@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",
+    "experimentalDisableTemplateSupport": true,
     "module": "esnext",
     "baseUrl": "./",
     "moduleResolution": "node",
@@ -8,7 +9,9 @@
       "@/*": [
         "src/*"
       ]
+      
     },
+    "jsx": "preserve",
     "lib": [
       "esnext",
       "dom",

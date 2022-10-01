@@ -8,14 +8,20 @@
         <div
           id="com"
           @click="event"
-          v-for="(comment, index) in state.messageInfo.comments">
+          v-for="(comment, index) in state.messageInfo.comments"
+        >
           <div>{{ comment.text }}</div>
           <button @click="deleteComment(index)">Supprimer</button>
         </div>
         <div id="group-btn">
           <div class="btn-update"></div>
           <label for="update">Modifier le message: </label>
-          <textarea type="text" id="message" v-model="post.message" placeholder="Modifier votre message ici!"></textarea>
+          <textarea
+            type="text"
+            id="message"
+            v-model="post.message"
+            placeholder="Modifier votre message ici!"
+          ></textarea>
           <button id="update" @click="updateMessage">Update</button>
         </div>
         <div class="comment">
@@ -23,19 +29,18 @@
           <textarea
             v-model="messagePost.comments.text"
             maxlength="256"
-            placeholder="Ajouter un commentaire ici!"></textarea>
+            placeholder="Ajouter un commentaire ici!"
+          ></textarea>
           <button @click="postComments">Envoyez</button>
         </div>
-        <button  @click="deleteMessage" id="delete">Supprimer</button>
+        <button @click="deleteMessage" id="delete">Supprimer</button>
       </div>
     </div>
   </main>
 </template>
 <script setup>
-
 import router from "@/router";
 import { reactive } from "vue";
-
 
 /** Recherche des paramètres dans l'URL */
 
@@ -55,7 +60,7 @@ const state = reactive({
 
 const messagePost = reactive({
   comments: {
-    idPosterComment : localStorage.getItem("id"),
+    idPosterComment: localStorage.getItem("id"),
     commenterPseudo: localStorage.getItem("pseudo"),
     text: "",
   },
@@ -75,31 +80,29 @@ const displayMessage = async () => {
 };
 displayMessage();
 
-
 /** Fonction permetant la suppression du message ciblé */
 
 const deleteMessage = async () => {
-    await fetch(`http://localhost:5000/message/${id}`, {
-      method: "DELETE",
-      headers: {
-        authorization: "Bearer " + localStorage.getItem("token"),
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data)
+  await fetch(`http://localhost:5000/message/${id}`, {
+    method: "DELETE",
+    headers: {
+      authorization: "Bearer " + localStorage.getItem("token"),
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+    },
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data)
         if (confirm("Voulez-vous suprrimer ce message?")) {
-        alert("Message supprimé");
-        router.push("/public/home");
-      }
-        else {
+          alert("Message supprimé");
+          router.push("/public/home");
+        } else {
           alert("Problème API");
         }
-      })
-      .catch((e) => alert(e));
+    })
+    .catch((e) => alert(e));
 };
 
 /** Fonction mermettant la modification du message ciblé */
@@ -110,7 +113,7 @@ const updateMessage = async () => {
     headers: {
       "Content-Type": "application/json",
       authorization: "Bearer " + localStorage.getItem("token"),
-      Accept : "application/json",
+      Accept: "application/json",
       "Access-Control-Allow-Origin": "*",
     },
     body: JSON.stringify(post),
@@ -124,7 +127,6 @@ const updateMessage = async () => {
     })
     .catch((e) => alert(e));
 };
-
 
 const postComments = async () => {
   if (message) {
@@ -140,8 +142,8 @@ const postComments = async () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        alert('Commentaire publié')
-        router.go("/public/home");
+        alert("Commentaire publié");
+        router.push("/public/home");
       })
 
       .catch((e) => alert(e));
@@ -171,7 +173,8 @@ async function deleteComment(idcom) {
       alert(err);
     })
     .then((data) => {
-      alert('Commmentaire supprimé')
+      alert("Commmentaire supprimé");
+      router.push("/public/home")
     })
     .catch((err) => {
       alert(err);
@@ -220,21 +223,21 @@ main {
   width: 100%;
   margin-bottom: 80px;
 }
-#group-btn{
+#group-btn {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   width: 100%;
 }
-.comment{
+.comment {
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
 }
-textarea{
+textarea {
   width: 70%;
   height: 80px;
   resize: none;

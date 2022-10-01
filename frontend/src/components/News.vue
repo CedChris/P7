@@ -38,6 +38,7 @@ const messagePost = reactive({
   userId: localStorage.getItem("id"),
   pseudo: localStorage.getItem("pseudo"),
   message: "",
+  picture: null,
   formPost: null,
 });
 
@@ -59,9 +60,10 @@ const onFiles = async (e) => {
 
 const post = async (e) => {
   let postWithoutImage = new FormData()
-    postWithoutImage.append("message", messagePost.message)
+    postWithoutImage.append("message", messagePost.message);
     postWithoutImage.append("userId", localStorage.getItem("id"));
-    postWithoutImage.append("pseudo", localStorage.getItem("pseudo"));
+    postWithoutImage.append("pseudo", localStorage.getItem("pseudo"))
+    postWithoutImage.append("picture", messagePost.picture);
     messagePost.formPost = postWithoutImage;
 
   if (item.postWithImage !== null) {
