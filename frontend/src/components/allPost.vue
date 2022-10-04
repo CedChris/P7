@@ -36,15 +36,12 @@
 import router from "@/router";
 import { reactive } from "vue";
 
-
 const tokenid = localStorage.getItem("token");
 const id = localStorage.getItem("id");
 
 let state = reactive({
   messages: "",
 });
-
-
 
 async function idpost(id) {
   const idmessage = this.state.messages[id]._id;

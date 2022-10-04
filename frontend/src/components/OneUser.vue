@@ -9,8 +9,6 @@ import { reactive } from "vue";
 /** PAGE USER */
 /** Possibilité d'ajouter d'autres fonctionnalité */
 
-
-
 const state = reactive({
   users: {},
 });

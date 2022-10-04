@@ -1,5 +1,4 @@
 <template>
-  <!-- <img :src="require('@/assets/icon-left-font-monochrome-black.png')" alt=""> -->
   <nav>
     <router-link tag="a" to="/">Login</router-link> |
     <router-link tag="a" to="/signup">Créer un compte</router-link>
