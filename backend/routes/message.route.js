@@ -29,7 +29,7 @@ router.delete("/:id", auth, deleteMessage);
 router.patch("/add-like/:id", addLike);
 router.patch("/remove-like/:id", removeLike);
 
-// CRUD Commentaire
+// Commentaire
 
 router.patch("/comment/:id", createComment);
 router.patch("/delete-comment/:id", deleteComment);

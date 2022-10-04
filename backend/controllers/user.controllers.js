@@ -2,11 +2,10 @@ const userModel = require("../models/user.model");
 const ObjectId = require("mongoose").Types.ObjectId;
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const cookieParser = require("cookie-parser");
 require("dotenv").config();
 
 exports.signup = (req, res) => {
-  const { pseudo, email, password, age } = req.body;
+  const { pseudo, email, password} = req.body;
   bcrypt
     .hash(password, 10)
     .then((hash) => {
@@ -21,14 +20,14 @@ exports.signup = (req, res) => {
         .then(() =>
           res.status(200).json({ message: "Utilisateur enregistré!" })
         )
-        .catch((err) => res.status(500).json({ message: "ici" + err }));
+        .catch((err) => res.status(500).json({ message: "Problème Sauvegarde Utilisateur" + err }));
     })
     .catch((err) =>
       res.status(400).json("Problème d'incription lors du hashage" + err)
     );
 };
 exports.login = (req, res) => {
-  const { email, password, pseudo } = req.body;
+  const { email, password} = req.body;
   userModel
     .findOne({ email: email })
     .then((user) => {

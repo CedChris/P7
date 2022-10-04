@@ -3,8 +3,6 @@ const cors = require("cors");
 const app = express();
 const helmet = require("helmet");
 const cookieParser = require("cookie-parser");
-const multer = require("multer");
-const sharp = require("sharp");
 const path = require("path");
 
 const userRoutes = require("./routes/user.route");
